@@ -1,10 +1,3 @@
-/* ============================================================
-   INTEGRACAO - escrito por qualquer um dos tres, no final.
-   So chama as funcoes que ja estao prontas nos outros arquivos,
-   na ordem certa. Nao contem nenhuma logica de negocio.
-   Compilar: gcc main.c pessoa_a_geometria.c pessoa_b_iluminacao.c
-             pessoa_c_textura_visibilidade.c -o solar -lglut -lGLU -lGL -lm
-   ============================================================ */
 #include <stdlib.h>
 #include <math.h>
 #include "solarsystem.h"
@@ -12,6 +5,16 @@
 static float camAngulo = 30.0f;
 static float camAltura = 8.0f;
 static float camDist   = 18.0f;
+
+#define CAM_DIST_MIN 2.5f
+#define CAM_DIST_MAX 40.0f
+
+static void aplicaZoom(float delta)
+{
+    camDist += delta;
+    if (camDist < CAM_DIST_MIN) camDist = CAM_DIST_MIN;
+    if (camDist > CAM_DIST_MAX) camDist = CAM_DIST_MAX;
+}
 
 void init(void)
 {
@@ -28,12 +31,19 @@ void display(void)
     glLoadIdentity();
 
     float rad = camAngulo * 0.0174533f;
-    gluLookAt(camDist * sinf(rad), camAltura, camDist * cosf(rad),
+    float olhoX = camDist * sinf(rad);
+    float olhoY = camAltura;
+    float olhoZ = camDist * cosf(rad);
+
+    gluLookAt(olhoX, olhoY, olhoZ,
               0.0, 0.0, 0.0,
               0.0, 1.0, 0.0);
 
+    desenhaSkybox(texturaFundoID, olhoX, olhoY, olhoZ); /* Pessoa C - fundo 3D */
+    /* desenhaFundoEspacial(texturaFundoID); */          /* Pessoa C - versao 2D antiga */
+    /* desenhaCampoDeEstrelas(400); */                    /* Pessoa C - versao em pontos */
+
     atualizaPosicaoLuz();          /* Pessoa B - luz fixa no Sol, na origem */
-    desenhaCampoDeEstrelas(400);   /* Pessoa C */
     desenhaSistemaSolar();         /* Pessoa A (usa B e C internamente) */
 
     glutSwapBuffers();
@@ -65,8 +75,20 @@ void keyboard(unsigned char key, int x, int y)
         case 'd': camAngulo += 3.0f; break;
         case 'w': camAltura += 0.5f; break;
         case 'x': camAltura -= 0.5f; break;
+        case '+': aplicaZoom(-1.0f); break; /* aproxima */
+        case '-': aplicaZoom( 1.0f); break; /* afasta   */
         case 27: exit(0);
     }
+    glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+    if (state != GLUT_DOWN) return; /* evento da roda dispara so no "down" */
+
+    if (button == 3)      aplicaZoom(-1.0f); /* roda pra cima -> aproxima */
+    else if (button == 4) aplicaZoom( 1.0f); /* roda pra baixo -> afasta  */
+
     glutPostRedisplay();
 }
 
@@ -82,6 +104,7 @@ int main(int argc, char **argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
     glutTimerFunc(16, timer, 0);
 
     glutMainLoop();

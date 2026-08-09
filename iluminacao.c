@@ -1,13 +1,3 @@
-/* ============================================================
-   PESSOA B - Iluminacao e Sombreamento
-   Responsavel por: GL_LIGHT0 posicionada no Sol (luz posicional
-   com atenuacao, para os planetas mais distantes ficarem mais
-   escuros), materiais de cada planeta e alternancia entre
-   GL_FLAT e GL_SMOOTH.
-   Este arquivo pode ser testado sozinho: basta desenhar 2-3
-   esferas soltas com glutSolidSphere e chamar estas funcoes -
-   nao precisa da orbita nem da textura da Pessoa A/C prontas.
-   ============================================================ */
 #include "solarsystem.h"
 
 static GLenum modoSombreamento = GL_SMOOTH;
@@ -18,7 +8,7 @@ void inicializaIluminacao(void)
     glEnable(GL_LIGHT0);
     glShadeModel(modoSombreamento);
 
-    GLfloat luzAmbiente[]  = {0.05f, 0.05f, 0.05f, 1.0f};
+    GLfloat luzAmbiente[]  = {0.1f, 0.1f, 0.1f, 1.0f};
     GLfloat luzDifusa[]    = {1.0f, 1.0f, 0.95f, 1.0f};
     GLfloat luzEspecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
@@ -45,9 +35,12 @@ void atualizaPosicaoLuz(void)
 
 void configuraMaterialSol(void)
 {
-    GLfloat emissiva[] = {1.0f, 0.9f, 0.4f, 1.0f};
+    /* emissao branca: a textura real do Sol ja tem a cor/brilho corretos.
+       Se usar emissao colorida aqui, o GL_MODULATE da textura multiplica
+       e distorce as cores da foto. */
+    GLfloat emissiva[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat zero[]      = {0.0f, 0.0f, 0.0f, 1.0f};
-    glMaterialfv(GL_FRONT, GL_EMISSION, emissiva); /* o Sol "brilha", nao reflete luz */
+    glMaterialfv(GL_FRONT, GL_EMISSION, emissiva);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, zero);
     glMaterialfv(GL_FRONT, GL_SPECULAR, zero);
 }
@@ -65,6 +58,20 @@ void configuraMaterialPlaneta(int indice)
     glMaterialfv(GL_FRONT, GL_DIFFUSE, difusa);
     glMaterialfv(GL_FRONT, GL_SPECULAR, especular);
     glMaterialf(GL_FRONT, GL_SHININESS, 12.0f);
+}
+
+void configuraMaterialLua(void)
+{
+    /* material neutro (branco) para a foto real da Lua aparecer sem
+       herdar a cor do planeta que foi desenhado antes dela */
+    GLfloat difusaBranca[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat especular[]    = {0.15f, 0.15f, 0.15f, 1.0f};
+    GLfloat zero[]         = {0.0f, 0.0f, 0.0f, 1.0f};
+
+    glMaterialfv(GL_FRONT, GL_EMISSION, zero);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, difusaBranca);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, especular);
+    glMaterialf(GL_FRONT, GL_SHININESS, 5.0f);
 }
 
 void alternaModeloSombreamento(void)
