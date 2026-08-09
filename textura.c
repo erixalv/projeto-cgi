@@ -154,10 +154,6 @@ void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos,
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    /* disco fino: desenhado dos dois lados, entao desliga o culling
-       so durante o anel para nao sumir quando visto por baixo */
-    glDisable(GL_CULL_FACE);
-
     glBegin(GL_TRIANGLE_STRIP);
     for (i = 0; i <= segmentos; i++) {
         float t = (2.0f * 3.14159265f * i) / segmentos;
@@ -173,7 +169,6 @@ void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos,
     }
     glEnd();
 
-    glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDisable(GL_TEXTURE_2D);
 }
@@ -241,14 +236,12 @@ void desenhaSkybox(GLuint texID, float camX, float camY, float camZ)
 
     glDisable(GL_LIGHTING);   /* fundo nao deve ser afetado pela luz do Sol */
     glDisable(GL_DEPTH_TEST); /* sempre desenhado "atras" de tudo */
-    glDisable(GL_CULL_FACE);  /* estamos vendo o lado de DENTRO da esfera */
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texID);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     gluSphere(quad, 60.0, 40, 40); /* raio bem maior que a orbita mais externa */
 
-    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
@@ -282,24 +275,27 @@ void desenhaCampoDeEstrelas(int quantidade)
     glEnable(GL_LIGHTING);
 }
 
-static int cullingAtivo = 1;
-
 void configuraVisibilidade(void)
 {
     glEnable(GL_DEPTH_TEST);   /* algoritmo do z-buffer: remove superficies ocultas
                                    comparando a profundidade de cada fragmento     */
     glDepthFunc(GL_LESS);
-
-    glEnable(GL_CULL_FACE);    /* back-face culling: descarta faces cuja normal
-                                   aponta para longe da camera, antes mesmo de
-                                   rasterizar - reduz trabalho e evita artefatos
-                                   em esferas fechadas                             */
-    glCullFace(GL_BACK);
 }
 
-void alternaBackfaceCulling(void)
+/* Modo de demonstracao: desenha so as arestas dos triangulos (sem
+   preenchimento) e desliga o depth test. Com isso da pra ver as arestas
+   de TODOS os lados de cada esfera de uma vez (inclusive as escondidas
+   pelo z-buffer no modo solido normal) - bom pra visualizar a malha. */
+static int modoWireframe = 0;
+
+void alternaWireframe(void)
 {
-    cullingAtivo = !cullingAtivo;
-    if (cullingAtivo) glEnable(GL_CULL_FACE);
-    else               glDisable(GL_CULL_FACE);
+    modoWireframe = !modoWireframe;
+    if (modoWireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_DEPTH_TEST);
+    } else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_DEPTH_TEST);
+    }
 }

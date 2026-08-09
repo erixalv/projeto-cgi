@@ -105,8 +105,8 @@ void desenhaSistemaSolar(void)
     /* Sol: raiz da hierarquia, fica parado na origem (so gira em torno do eixo) */
     glPushMatrix();
         glRotatef(anguloRotacaoSol, 0.0f, 1.0f, 0.0f);
-        configuraMaterialSol();                          /* Pessoa B */
-        desenhaEsferaTexturizada(1.0f, 30, 20, texturaSolID); /* Pessoa C */
+        configuraMaterialSol();                         
+        desenhaEsferaTexturizada(1.0f, 30, 20, texturaSolID); 
     glPopMatrix();
 
     for (i = 0; i < numPlanetas; i++) {
@@ -125,21 +125,21 @@ void desenhaSistemaSolar(void)
             if (p->temAnel) {
                 glPushMatrix();
                     glRotatef(20.0f, 1.0f, 0.0f, 0.0f); /* inclinacao do anel, tipo Saturno de verdade */
-                    desenhaAnelTexturizado(p->anelRaioInterno, p->anelRaioExterno, 80, p->anelTexturaID); /* Pessoa C */
+                    desenhaAnelTexturizado(p->anelRaioInterno, p->anelRaioExterno, 80, p->anelTexturaID); 
                 glPopMatrix();
             }
 
             glRotatef(p->anguloRotacao, 0.0f, 1.0f, 0.0f); /* rotacao propria */
 
-            configuraMaterialPlaneta(i);                          /* Pessoa B */
-            desenhaEsferaTexturizada(p->raio, 20, 16, p->texturaID); /* Pessoa C */
+            configuraMaterialPlaneta(i);                          
+            desenhaEsferaTexturizada(p->raio, 20, 16, p->texturaID); 
 
             if (p->temLua) {
                 glPushMatrix();
                     glRotatef(anguloOrbitalLua, 0.0f, 1.0f, 0.0f);
                     glTranslatef(distanciaLua, 0.0f, 0.0f);
-                    configuraMaterialLua(); /* Pessoa B */
-                    desenhaEsferaTexturizada(raioLua, 12, 10, texturaLuaID); /* Pessoa C */
+                    configuraMaterialLua(); 
+                    desenhaEsferaTexturizada(raioLua, 12, 10, texturaLuaID); 
                 glPopMatrix();
             }
         glPopMatrix();

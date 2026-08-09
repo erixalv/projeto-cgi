@@ -19,10 +19,10 @@ static void aplicaZoom(float delta)
 void init(void)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    inicializaCorpos();          /* Pessoa A */
-    inicializaIluminacao();      /* Pessoa B */
-    carregaTexturasPlanetas();   /* Pessoa C */
-    configuraVisibilidade();     /* Pessoa C */
+    inicializaCorpos();          
+    inicializaIluminacao();   
+    carregaTexturasPlanetas();   
+    configuraVisibilidade();     
 }
 
 void display(void)
@@ -39,12 +39,10 @@ void display(void)
               0.0, 0.0, 0.0,
               0.0, 1.0, 0.0);
 
-    desenhaSkybox(texturaFundoID, olhoX, olhoY, olhoZ); /* Pessoa C - fundo 3D */
-    /* desenhaFundoEspacial(texturaFundoID); */          /* Pessoa C - versao 2D antiga */
-    /* desenhaCampoDeEstrelas(400); */                    /* Pessoa C - versao em pontos */
+    desenhaSkybox(texturaFundoID, olhoX, olhoY, olhoZ);     
 
-    atualizaPosicaoLuz();          /* Pessoa B - luz fixa no Sol, na origem */
-    desenhaSistemaSolar();         /* Pessoa A (usa B e C internamente) */
+    atualizaPosicaoLuz();     
+    desenhaSistemaSolar();     
 
     glutSwapBuffers();
 }
@@ -70,7 +68,7 @@ void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
         case 's': alternaModeloSombreamento(); break;
-        case 'c': alternaBackfaceCulling();    break;
+        case 'v': alternaWireframe();          break;
         case 'a': camAngulo -= 3.0f; break;
         case 'd': camAngulo += 3.0f; break;
         case 'w': camAltura += 0.5f; break;
