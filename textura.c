@@ -173,8 +173,6 @@ void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos,
     glDisable(GL_TEXTURE_2D);
 }
 
-static GLfloat estrelas[500][3];
-static int estrelasGeradas = 0;
 
 /* Desenha a imagem de fundo cobrindo a janela inteira, atras de tudo.
    Usa uma projecao ortografica temporaria (0..1 x 0..1) so pra esse
@@ -248,31 +246,6 @@ void desenhaSkybox(GLuint texID, float camX, float camY, float camZ)
 
     glPopMatrix();
     gluDeleteQuadric(quad);
-}
-
-void desenhaCampoDeEstrelas(int quantidade)
-{
-    int i;
-    if (quantidade > 500) quantidade = 500;
-
-    if (!estrelasGeradas) {
-        for (i = 0; i < quantidade; i++) {
-            estrelas[i][0] = (rand() % 2000 - 1000) / 20.0f;
-            estrelas[i][1] = (rand() % 2000 - 1000) / 20.0f;
-            estrelas[i][2] = (rand() % 2000 - 1000) / 20.0f;
-        }
-        estrelasGeradas = 1;
-    }
-
-    glDisable(GL_LIGHTING);
-    glPointSize(1.5f);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_POINTS);
-    for (i = 0; i < quantidade; i++) {
-        glVertex3fv(estrelas[i]);
-    }
-    glEnd();
-    glEnable(GL_LIGHTING);
 }
 
 void configuraVisibilidade(void)
