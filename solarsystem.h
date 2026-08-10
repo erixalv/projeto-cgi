@@ -55,7 +55,6 @@ void alternaModeloSombreamento(void);   /* alterna GL_FLAT <-> GL_SMOOTH */
 void carregaTexturasPlanetas(void);     /* gera/carrega e preenche texturaID de cada planeta */
 void desenhaEsferaTexturizada(float raio, int fatias, int camadas, GLuint texID);
 void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos, GLuint texID);
-void desenhaCampoDeEstrelas(int quantidade);
 void desenhaFundoEspacial(GLuint texID); /* fundo com imagem, cobrindo a tela inteira (2D) */
 void desenhaSkybox(GLuint texID, float camX, float camY, float camZ); /* fundo esferico 3D, centrado na camera */
 void configuraVisibilidade(void);       /* liga o z-buffer (algoritmo de visibilidade) */
