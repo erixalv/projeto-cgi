@@ -18,6 +18,68 @@ static const float distanciaLua   = 0.5f;
 static float anguloRotacaoSol = 0.0f;
 static const float velRotacaoSol = 0.4f; /* mais lento que os planetas, sol e gigante */
 
+/* Dados do cometa (curva de bézier) */
+typedef struct { float x, y, z; } Ponto3D;
+static Ponto3D p0 = { 12.0f, 0.0f,  12.0f };
+static Ponto3D p1 = {-15.0f, 0.0f,   5.0f };
+static Ponto3D p2 = { -5.0f, 0.0f, -15.0f };
+static Ponto3D p3 = { 12.0f, 0.0f, -12.0f };
+static float cometaT = 0.0f;
+static float cometaVel = 0.002f;
+
+void inicializaCometa(void) {
+    cometaT = 0.0f;
+}
+
+void atualizaCometa(void) {
+    cometaT += cometaVel;
+    if (cometaT >= 1.0f) {
+        cometaT = 0.0f; /* volta para o comeco */
+    }
+}
+
+static Ponto3D calculaBezier(float t) {
+    float u = 1.0f - t;
+    float tt = t * t;
+    float uu = u * u;
+    float uuu = uu * u;
+    float ttt = tt * t;
+    Ponto3D p;
+    p.x = uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x;
+    p.y = uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y;
+    p.z = uuu * p0.z + 3 * uu * t * p1.z + 3 * u * tt * p2.z + ttt * p3.z;
+    return p;
+}
+
+static void desenhaOrbitaCometa(void) {
+    int i;
+    glDisable(GL_LIGHTING);
+    glColor3f(0.4f, 0.8f, 1.0f);
+    glBegin(GL_LINE_STRIP);
+    for (i = 0; i <= 100; i++) {
+        float t = i / 100.0f;
+        Ponto3D p = calculaBezier(t);
+        glVertex3f(p.x, p.y, p.z);
+    }
+    glEnd();
+    glEnable(GL_LIGHTING);
+}
+
+void desenhaCometa(void) {
+    Ponto3D pos;
+    desenhaOrbitaCometa();
+    pos = calculaBezier(cometaT);
+    glPushMatrix();
+        glTranslatef(pos.x, pos.y, pos.z);
+        GLfloat difusa[] = {0.6f, 0.9f, 1.0f, 1.0f};
+        GLfloat zero[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        glMaterialfv(GL_FRONT, GL_EMISSION, zero);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, difusa);
+        glMaterialf(GL_FRONT, GL_SHININESS, 50.0f);
+        desenhaEsferaTexturizada(0.12f, 12, 12, 0);
+    glPopMatrix();
+}
+
 static void adicionaPlaneta(const char *nome, float raio, float dist, float ecc,
                              float velOrb, float velRot,
                              float r, float g, float b, int lua,
@@ -62,6 +124,8 @@ void inicializaCorpos(void)
     planetas[5].anelRaioInterno = planetas[5].raio * 1.4f;
     planetas[5].anelRaioExterno = planetas[5].raio * 2.3f;
     planetas[5].arquivoTexturaAnel = "texturas/saturn_ring.png";
+
+    inicializaCometa();
 }
 
 void atualizaOrbitas(void)
@@ -78,6 +142,8 @@ void atualizaOrbitas(void)
 
     anguloRotacaoSol += velRotacaoSol;
     if (anguloRotacaoSol > 360.0f) anguloRotacaoSol -= 360.0f;
+
+    atualizaCometa();
 }
 
 /* Curva parametrica da orbita, desenhada como referencia visual */
@@ -144,4 +210,6 @@ void desenhaSistemaSolar(void)
             }
         glPopMatrix();
     }
+
+    desenhaCometa();
 }

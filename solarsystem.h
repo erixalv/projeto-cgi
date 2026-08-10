@@ -39,6 +39,10 @@ void inicializaCorpos(void);      /* preenche planetas[] e numPlanetas       */
 void atualizaOrbitas(void);       /* avanca angulos de orbita e rotacao      */
 void desenhaSistemaSolar(void);   /* desenha hierarquia Sol -> Planeta -> Lua */
 
+void inicializaCometa(void);      /* configura estado inicial do cometa      */
+void atualizaCometa(void);        /* atualiza o parametro 't' na curva de Bezier */
+void desenhaCometa(void);         /* desenha a curva e o cometa em 't'       */
+
 /* ---- Iluminacao e Sombreamento ---- */
 void inicializaIluminacao(void);        /* configura GL_LIGHT0 (o Sol) uma vez */
 void atualizaPosicaoLuz(void);          /* re-fixa a luz na origem a cada frame */
