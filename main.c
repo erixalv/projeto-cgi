@@ -68,7 +68,6 @@ void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
         case 's': alternaModeloSombreamento(); break;
-        case 'v': alternaWireframe();          break;
         case 'a': camAngulo -= 3.0f; break;
         case 'd': camAngulo += 3.0f; break;
         case 'w': camAltura += 0.5f; break;

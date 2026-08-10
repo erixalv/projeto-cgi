@@ -57,6 +57,5 @@ void desenhaEsferaTexturizada(float raio, int fatias, int camadas, GLuint texID)
 void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos, GLuint texID);
 void desenhaSkybox(GLuint texID, float camX, float camY, float camZ); /* fundo esferico 3D, centrado na camera */
 void configuraVisibilidade(void);       /* liga o z-buffer (algoritmo de visibilidade) */
-void alternaWireframe(void); /* liga/desliga modo aramado, pra visualizar a malha */
 
 #endif

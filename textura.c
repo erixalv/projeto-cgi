@@ -214,21 +214,3 @@ void configuraVisibilidade(void)
                                    comparando a profundidade de cada fragmento     */
     glDepthFunc(GL_LESS);
 }
-
-/* Modo de demonstracao: desenha so as arestas dos triangulos (sem
-   preenchimento) e desliga o depth test. Com isso da pra ver as arestas
-   de TODOS os lados de cada esfera de uma vez (inclusive as escondidas
-   pelo z-buffer no modo solido normal) - bom pra visualizar a malha. */
-static int modoWireframe = 0;
-
-void alternaWireframe(void)
-{
-    modoWireframe = !modoWireframe;
-    if (modoWireframe) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDisable(GL_DEPTH_TEST);
-    } else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glEnable(GL_DEPTH_TEST);
-    }
-}
