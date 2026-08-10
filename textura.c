@@ -83,8 +83,7 @@ void carregaTexturasPlanetas(void)
         texturaLuaID = geraTexturaProcedural(0.75f, 0.75f, 0.75f); /* cinza, cor da lua */
     }
 
-    /* sem fallback procedural aqui: se faltar o arquivo, desenhaFundoEspacial/desenhaSkybox
-       simplesmente nao desenham nada e fica so o glClearColor (preto) */
+
     texturaFundoID = carregaTexturaDeArquivo("texturas/fundo_espaco.jpg");
 
     for (i = 0; i < numPlanetas; i++) {
@@ -174,46 +173,7 @@ void desenhaAnelTexturizado(float raioInterno, float raioExterno, int segmentos,
 }
 
 
-/* Desenha a imagem de fundo cobrindo a janela inteira, atras de tudo.
-   Usa uma projecao ortografica temporaria (0..1 x 0..1) so pra esse
-   quad, com depth test desligado, e restaura tudo no final - por isso
-   pode ser chamada logo apos o glClear(), antes de configurar a
-   camera 3D, sem bagunçar o resto do display(). */
-void desenhaFundoEspacial(GLuint texID)
-{
-    if (texID == 0) return; /* sem imagem carregada: fica so o glClearColor */
 
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texID);
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, 0.0f);
-        glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0f, 0.0f);
-        glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0f, 1.0f);
-        glTexCoord2f(0.0f, 1.0f); glVertex2f(0.0f, 1.0f);
-    glEnd();
-
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-
-    glPopMatrix();               /* restaura modelview   */
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();                /* restaura a perspectiva 3D */
-    glMatrixMode(GL_MODELVIEW);
-}
 
 /* Fundo esferico 3D: uma esfera enorme texturizada, vista de dentro,
    sempre recentralizada no olho da camera (camX,camY,camZ = mesma
